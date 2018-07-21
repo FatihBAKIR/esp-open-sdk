@@ -133,7 +133,11 @@ _toolchain:
 	./ct-ng xtensa-lx106-elf
 	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
 	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
+	sed -r -i s%CT_CC_GCC_VERSION=\"4\.[0-9]\.[0-9]\"%CT_CC_GCC_VERSION=\"5.2.0\"% .config
+	sed -r -i s%CT_CC_GCC_V_4_8_5=y%"#"CT_CC_GCC_V_4_8_5=y% .config
 	cat ../crosstool-config-overrides >> .config
+	#rm .config
+	#wget https://gist.githubusercontent.com/FatihBAKIR/c39040f7866b0e0182bab048b7bd16ff/raw/baaab8b79652f06bdc1a9b7d7cf9c275495b1683/.config
 	./ct-ng build
 
 
