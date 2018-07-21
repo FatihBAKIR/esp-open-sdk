@@ -8,7 +8,4 @@
 [submodule "esptool"]
 	path = esptool
 	url = https://github.com/themadinventor/esptool
-[submodule "esp-lwip"]
-	path = esp-lwip
-	url = https://github.com/pfalcon/esp-lwip
-	branch = esp8266-1.4.1-pfalcon
+

@@ -105,7 +105,7 @@ endif
 clean: clean-sdk
 	$(MAKE) -C crosstool-NG clean MAKELEVEL=0
 	-rm -rf crosstool-NG/.build/src
-	-rm -f crosstool-NG/local-patches/gcc/5.2.0/1000-*
+	-rm -f crosstool-NG/local-patches/gcc/4.8.5/1000-*
 	-rm -rf $(TOOLCHAIN)
 
 clean-sdk:
@@ -113,7 +113,7 @@ clean-sdk:
 	rm -f sdk
 	rm -f .sdk_patch_$(VENDOR_SDK)
 	rm -f user_rf_cal_sector_set.o empty_user_rf_pre_init.o
-	$(MAKE) -C esp-open-lwip -f Makefile.open clean
+	$(MAKE) -C esp-lwip -f Makefile clean
 
 clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
@@ -126,7 +126,7 @@ esptool: toolchain
 toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
 
 $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
-	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/5.2.0/
+	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
 	$(MAKE) -C crosstool-NG -f ../Makefile _toolchain
 
 _toolchain:
@@ -359,9 +359,10 @@ user_rf_cal_sector_set.o: user_rf_cal_sector_set.c $(TOOLCHAIN)/bin/xtensa-lx106
 
 lwip: toolchain sdk_patch
 ifeq ($(STANDALONE),y)
-	$(MAKE) -C esp-open-lwip -f Makefile.open install \
+	$(MAKE) -C esp-lwip -f Makefile install \
 	    CC=$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc \
 	    AR=$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar \
+	    OBJCOPY=$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy \
 	    PREFIX=$(TOOLCHAIN)
 	cp -a esp-open-lwip/include/arch esp-open-lwip/include/lwip esp-open-lwip/include/netif \
 	    esp-open-lwip/include/lwipopts.h \
