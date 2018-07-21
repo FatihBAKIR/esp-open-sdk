@@ -17,6 +17,11 @@ diff --git a/gcc/config/xtensa/constraints.md b/gcc/config/xtensa/constraints.md
 index 30f4c1f..5fd9337 100644
 --- a/gcc/config/xtensa/constraints.md
 +++ b/gcc/config/xtensa/constraints.md
+@@ -114,4 +114,0 @@
+-(define_constraint "Y"
+- "A constant that can be used in relaxed MOVI instructions."
+- (and (match_code "const_int,const_double,const,symbol_ref,label_ref")
+-      (match_test "TARGET_AUTO_LITPOOLS")))
 @@ -137,3 +137,18 @@
        (and (match_code "reg")
  	   (match_test "reload_in_progress
@@ -189,13 +194,14 @@ index a577aa3..f56c45e 100644
  })
  
  (define_insn "movhi_internal"
--  [(set (match_operand:HI 0 "nonimmed_operand" "=D,D,a,a,a,U,*a,*A")
--	(match_operand:HI 1 "move_operand" "M,d,r,I,U,r,*A,*r"))]
+-  [(set (match_operand:HI 0 "nonimmed_operand" "=D,D,a,a,a,a,U,*a,*A")
+-	(match_operand:HI 1 "move_operand" "M,d,r,I,Y,U,r,*A,*r"))]
 +  [(set (match_operand:HI 0 "nonimmed_operand" "=D,D,a,a,a,a,U,*a,*A")
 +	(match_operand:HI 1 "move_operand" "M,d,r,I,Y,Z,r,*A,*r"))]
    "xtensa_valid_move (HImode, operands)"
    "@
     movi.n\t%0, %x1
+    mov.n\t%0, %1
 @@ -805,12 +808,13 @@
     mov\t%0, %1
     movi\t%0, %x1
@@ -204,10 +210,10 @@ index a577aa3..f56c45e 100644
     %v0s16i\t%1, %0
     rsr\t%0, ACCLO
     wsr\t%1, ACCLO"
--  [(set_attr "type"	"move,move,move,move,load,store,rsr,wsr")
+-  [(set_attr "type"  "move,move,move,move,move,load,store,rsr,wsr")
 +  [(set_attr "type"	"move,move,move,move,load,load,store,rsr,wsr")
     (set_attr "mode"	"HI")
--   (set_attr "length"	"2,2,3,3,3,3,3,3")])
+-   (set_attr "length"  "2,2,3,3,3,3,3,3,3")])
 +   (set_attr "length"	"2,2,3,3,3,18,3,3,3")])
  
  ;; 8-bit Integer moves
