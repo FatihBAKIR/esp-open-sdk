@@ -8,4 +8,6 @@
 [submodule "esptool"]
 	path = esptool
 	url = https://github.com/themadinventor/esptool
-
+[submodule "esp-lwip"]
+	path = esp-lwip
+	url = https://github.com/FatihBAKIR/esp-lwip

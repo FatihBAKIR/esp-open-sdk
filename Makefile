@@ -364,9 +364,6 @@ ifeq ($(STANDALONE),y)
 	    AR=$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar \
 	    OBJCOPY=$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy \
 	    PREFIX=$(TOOLCHAIN)
-	cp -a esp-open-lwip/include/arch esp-open-lwip/include/lwip esp-open-lwip/include/netif \
-	    esp-open-lwip/include/lwipopts.h \
-	    $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
 endif
 
 
