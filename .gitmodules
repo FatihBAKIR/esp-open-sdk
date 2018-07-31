@@ -11,3 +11,6 @@
 [submodule "esp-lwip"]
 	path = esp-lwip
 	url = https://github.com/FatihBAKIR/esp-lwip
+[submodule "axtls-8266"]
+	path = axtls-8266
+	url = https://github.com/FatihBAKIR/axtls-8266

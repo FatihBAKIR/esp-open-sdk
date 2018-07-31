@@ -74,7 +74,7 @@ VENDOR_SDK_DIR_0.9.2 = esp_iot_sdk_v0.9.2
 
 
 
-all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip
+all: esptool libcirom standalone sdk sdk_patch $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/libhal.a $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc lwip axtls
 	@echo
 	@echo "Xtensa toolchain is built, to use it:"
 	@echo
@@ -366,6 +366,8 @@ ifeq ($(STANDALONE),y)
 	    PREFIX=$(TOOLCHAIN)
 endif
 
+axtls: toolchain sdk_patch
+	$(MAKE) -C axtls-8266 install PREFIX=$(TOOLCHAIN)
 
 ESP8266_NONOS_SDK-2.1.0.zip:
 	wget --content-disposition "https://github.com/espressif/ESP8266_NONOS_SDK/archive/v2.1.0.zip"
