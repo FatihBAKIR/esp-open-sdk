@@ -2,10 +2,10 @@
 # Whether to merge SDK into Xtensa toolchain, producing standalone
 # ESP8266 toolchain. Use 'n' if you want generic Xtensa toolchain
 # which can be used with multiple SDK versions.
-STANDALONE = y
+STANDALONE = n
 
 # Directory to install toolchain to, by default inside current dir.
-TOOLCHAIN = $(TOP)/xtensa-lx106-elf
+TOOLCHAIN = /install
 
 
 # Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
@@ -91,7 +91,7 @@ else
 	@echo
 endif
 
-standalone: sdk sdk_patch toolchain
+standalone: sdk sdk_patch
 ifeq ($(STANDALONE),y)
 	@echo "Installing vendor SDK headers into toolchain sysroot"
 	@cp -Rf sdk/include/* $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/
@@ -119,42 +119,8 @@ clean-sysroot:
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/lib/*
 	rm -rf $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/usr/include/*
 
-
-esptool: toolchain
+esptool:
 	cp esptool/esptool.py $(TOOLCHAIN)/bin/
-
-toolchain: $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc
-
-$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc: crosstool-NG/ct-ng
-	cp -f 1000-mforce-l32.patch crosstool-NG/local-patches/gcc/4.8.5/
-	$(MAKE) -C crosstool-NG -f ../Makefile _toolchain
-
-_toolchain:
-	./ct-ng xtensa-lx106-elf
-	sed -r -i.org s%CT_PREFIX_DIR=.*%CT_PREFIX_DIR="$(TOOLCHAIN)"% .config
-	sed -r -i s%CT_INSTALL_DIR_RO=y%"#"CT_INSTALL_DIR_RO=y% .config
-	sed -r -i s%CT_CC_GCC_VERSION=\"4\.[0-9]\.[0-9]\"%CT_CC_GCC_VERSION=\"5.2.0\"% .config
-	sed -r -i s%CT_CC_GCC_V_4_8_5=y%"#"CT_CC_GCC_V_4_8_5=y% .config
-	cat ../crosstool-config-overrides >> .config
-	#rm .config
-	#wget https://gist.githubusercontent.com/FatihBAKIR/c39040f7866b0e0182bab048b7bd16ff/raw/baaab8b79652f06bdc1a9b7d7cf9c275495b1683/.config
-	./ct-ng build
-
-
-crosstool-NG: crosstool-NG/ct-ng
-
-crosstool-NG/ct-ng: crosstool-NG/bootstrap
-	$(MAKE) -C crosstool-NG -f ../Makefile _ct-ng
-
-_ct-ng:
-	./bootstrap
-	./configure --prefix=`pwd`
-	$(MAKE) MAKELEVEL=0
-	$(MAKE) install MAKELEVEL=0
-
-crosstool-NG/bootstrap:
-	@echo "You cloned without --recursive, fetching submodules for you."
-	git submodule update --init --recursive
 
 libcirom: $(TOOLCHAIN)/xtensa-lx106-elf/sysroot/lib/libcirom.a
 
@@ -357,15 +323,12 @@ empty_user_rf_pre_init.o: empty_user_rf_pre_init.c $(TOOLCHAIN)/bin/xtensa-lx106
 user_rf_cal_sector_set.o: user_rf_cal_sector_set.c $(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc $(VENDOR_SDK_DIR)/.dir
 	$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc -O2 -I$(VENDOR_SDK_DIR)/include -c $<
 
-lwip: toolchain sdk_patch
-ifeq ($(STANDALONE),y)
+lwip: sdk_patch
 	$(MAKE) -C esp-lwip -f Makefile install \
 	    CC=$(TOOLCHAIN)/bin/xtensa-lx106-elf-gcc \
 	    AR=$(TOOLCHAIN)/bin/xtensa-lx106-elf-ar \
 	    OBJCOPY=$(TOOLCHAIN)/bin/xtensa-lx106-elf-objcopy \
 	    PREFIX=$(TOOLCHAIN)
-endif
-
 axtls: toolchain sdk_patch
 	$(MAKE) -C axtls-8266 install PREFIX=$(TOOLCHAIN)
 
