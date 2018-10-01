@@ -5,7 +5,7 @@
 STANDALONE = n
 
 # Directory to install toolchain to, by default inside current dir.
-TOOLCHAIN = /install
+TOOLCHAIN = $(TOP)/xtensa-lx106-elf
 
 
 # Vendor SDK version to install, see VENDOR_SDK_ZIP_* vars below
